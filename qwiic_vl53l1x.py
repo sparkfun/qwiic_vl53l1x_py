@@ -456,22 +456,21 @@ VL53L1_ERROR_PLATFORM_SPECIFIC_START =										-60
 ###############################################################################
 class QwiicVL53L1X(object):
 
-	"""
+	"""!
 	SparkFunVL53L1X
 	Initialise the VL53L1X chip at ``address`` with ``i2c_driver``.
 
-	:param address: The I2C address to use for the device. 
+	@param address: The I2C address to use for the device. 
 	
 		* If not provided, the default address is used.
-	:param i2c_driver: An existing i2c driver object.
+	@param i2c_driver: An existing i2c driver object.
 	
 		* If not provided a driver object is created.
-	
-	:return:			**Constructor Initialization** -
+
+	@return **Bool** **Constructor Initialization** -
 
 						* True-	Successful
 						* False-	Issue loading I2C driver
-	:rtype:				Bool
 	"""
 
 	# Software Version Information
@@ -491,20 +490,21 @@ class QwiicVL53L1X(object):
 	#----------------------------------------------
 	# Constructor
 	def __init__(self, address = None, debug = None, i2c_driver = None):
-		"""
+		"""!
 		This method initializes the class object. If no 'address' or
 		'i2c_driver' are inputed or 'None' is specified, the method will
 		use the defaults.
-		:param address: 	The I2C address to use for the device.
+
+		@param address: The I2C address to use for the device.
 							If not provided, the method will default to
 							the first address in the
 							'available_addresses' list.
 								Default = 0x29
-		:param debug:		Designated whether or not to print debug
+		@param debug: Designated whether or not to print debug
 							statements.
 							0-	Don't print debug statements
 							1-	Print debug statements
-		:param i2c_driver:	An existing i2c driver object. If not
+		@param i2c_driver: An existing i2c driver object. If not
 							provided a driver object is created from the
 							'qwiic_i2c' I2C driver of the SparkFun Qwiic
 							library.
@@ -533,19 +533,23 @@ class QwiicVL53L1X(object):
 
 
 	def _begin(self):
-		"""
+		"""!
 		One time device initialization
-		:return:	0 on success
+
+		@return 	0 on success
 					#CALIBRATION_WARNING if failed
+		
 		"""
 		return self.sensor_init()
 
 
 	def _read_id(self):
-		"""
+		"""!
 		Read function of the ID device. (Verifies id ID matches factory number).
-		:return:	 0- Correct
+
+		@return 	 0- Correct
 					-1- Failure
+		
 		"""
 		if (self.get_sensor_id() == 0xEEAC):
 			return 0
@@ -553,11 +557,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_distance(self):
-		"""
+		"""!
 		This function returns the distance measured by the sensor in mm
 
-		:return:	Distance measured by the sensor in mm
-		:rtype:		Integer
+		@return **Integer** Distance measured by the sensor in mm
 		"""
 		self.status = 0
 		distance = self.__i2cRead(self.address,
@@ -567,11 +570,13 @@ class QwiicVL53L1X(object):
 
 
 	def init_sensor(self, address):
-		"""
+		"""!
 		Initialize the sensor with default values
 
-		:param address:	Device address
-		:return:	0 on Success
+		@param address: Device address
+
+		@return 	0 on Success
+		
 		"""
 		self.status = 0
 		sensorState = 0
@@ -606,11 +611,10 @@ class QwiicVL53L1X(object):
 	###############################################################################
 
 	def get_sw_version(self):
-		"""
+		"""!
 		This function returns the SW driver version
 
-		:return:	[major, minor, build, revision] numbers
-		:rtype:		List
+		@return **List** [major, minor, build, revision] numbers
 		"""
 		self.status = 0
 		major = self.VL53L1X_IMPLEMENTATION_VER_MAJOR
@@ -623,10 +627,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_i2c_address(self, new_address):
-		"""
+		"""!
 		This function sets the sensor I2C address used in case multiple devices application, default address **0x29** (0x52 >> 1)
 
-		:param new_address: I2C address to change device to
+		@param new_address: I2C address to change device to
 		"""
 		self.status = 0
 
@@ -636,11 +640,12 @@ class QwiicVL53L1X(object):
 		return self.status
 
 	def sensor_init(self):
-		"""
+		"""!
 		This function loads the 135 bytes default values to initialize the sensor.
 
-		:return:	* 0:success
+		@return 	* 0:success
 					* != 0:failed
+		
 		"""
 		self.status = 0
 		Addr = 0x00
@@ -668,7 +673,7 @@ class QwiicVL53L1X(object):
 
 
 	def clear_interrupt(self):
-		"""
+		"""!
 		This function clears the interrupt, to be called after a ranging data reading to arm the interrupt for the next data ready event.
 		"""
 		self.status = 0
@@ -678,10 +683,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_interrupt_polarity(self, NewPolarity):
-		"""
+		"""!
 		This function programs the interrupt polarity
 
-		:param NewPolarity:	* 1 = active high (**default**)
+		@param NewPolarity: * 1 = active high (**default**)
 							* 0 = active low
 		"""
 		self.status = 0
@@ -694,12 +699,13 @@ class QwiicVL53L1X(object):
 
 
 	def get_interrupt_polarity(self):
-		"""
+		"""!
 		This function returns the current interrupt polarity
 
-		:return:	* 1 = active high (**default**)
+		@return 	* 1 = active high (**default**)
 					* 0 = active low
 		:rtypye: Integer
+		
 		"""
 		self.status = 0
 		Temp = self.__i2cRead(self.address, GPIO_HV_MUX__CTRL, 1)
@@ -710,7 +716,7 @@ class QwiicVL53L1X(object):
 
 
 	def start_ranging(self):
-		"""
+		"""!
 		This function starts the ranging distance operation
 		The ranging operation is continuous. The clear interrupt has to be done after each get data to allow the interrupt to raise when the next data is ready
 		1=active high (**default**), 0=active low, use set_interrupt_polarity() to change the interrupt polarity if required.
@@ -722,7 +728,7 @@ class QwiicVL53L1X(object):
 
 
 	def stop_ranging(self):
-		"""
+		"""!
 		This function stops the ranging.
 		"""
 		self.status = 0
@@ -732,11 +738,10 @@ class QwiicVL53L1X(object):
 
 
 	def check_for_data_ready(self):
-		"""
+		"""!
 		This function checks if the new ranging data is available by polling the dedicated register.
 
-		:return isDataReady:	* 0 -> not ready
-								* 1 -> ready
+		@return **Integer** 1 if new data is ready, 0 if not
 		"""
 		self.status = 0
 
@@ -754,10 +759,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_timing_budget_in_ms(self, TimingBudgetInMs):
-		"""
+		"""!
 		This function programs the timing budget in ms.
 
-		:param TimingBudgetInMs: Predefined values = 15, 20, 33, 50, 100 (**default**), 200, 500.
+		@param TimingBudgetInMs: Predefined values = 15, 20, 33, 50, 100 (**default**), 200, 500.
 		"""
 		self.status = 0
 
@@ -815,7 +820,7 @@ class QwiicVL53L1X(object):
 
 
 	def get_timing_budget_in_ms(self):
-		"""
+		"""!
 		This function returns the current timing budget in ms.
 		"""
 		self.status = 0
@@ -845,10 +850,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_distance_mode(self, DM):
-		"""
+		"""!
 		This function programs the distance mode (1=short, 2=long(default)).
 
-		:param DM:	* 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
+		@param DM: * 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
 					* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**).
 		"""
 		self.status = 0
@@ -877,11 +882,12 @@ class QwiicVL53L1X(object):
 
 
 	def get_distance_mode(self):
-		"""
+		"""!
 		This function returns the current distance mode (1=short, 2=long).
 
-		:return:	* 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
+		@return 	* 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
 					* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**).
+		
 		"""
 		self.status = 0
 
@@ -894,10 +900,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_inter_measurement_in_ms(self, InterMeasMs):
-		"""
+		"""!
 		This function programs the Intermeasurement period in ms.
 
-		:param InterMeasMs:	Intermeasurement period must be >/= timing budget. This condition is not checked by the API,
+		@param InterMeasMs: Intermeasurement period must be >/= timing budget. This condition is not checked by the API,
 							the customer has the duty to check the condition. **Default = 100 ms**
 		"""
 		self.status = 0
@@ -912,11 +918,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_inter_measurement_in_ms(self):
-		"""
+		"""!
 		This function returns the Intermeasurement period in ms.
 
-		:return:	Intermeasurement period in ms
-		:rtype:		Integer
+		@return **Integer** Intermeasurement period in ms
 		"""
 		tmp = 0
 		ClockPLL = 0
@@ -931,12 +936,11 @@ class QwiicVL53L1X(object):
 
 
 	def boot_state(self):
-		"""
+		"""!
 		This function returns the boot state of the device (1:booted, 0:not booted)
-		
-		:return: 	* 1- booted
+
+		@return **Integer** * 1- booted
 			* 0- not booted
-		:rtype:		Integer
 		"""
 		self.status = 0
 		state = 0
@@ -947,11 +951,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_sensor_id(self):
-		"""
+		"""!
 		This function returns the sensor id, sensor Id must be 0xEEAC
 
-		:return:	Sensor ID
-		:rtype:		Integer
+		@return **Integer** Sensor ID
 		"""
 		self.status = 0
 		sensorId = 0
@@ -962,10 +965,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_signal_per_spad(self):
-		"""
+		"""!
 		This function returns the returned signal per SPAD in kcps/SPAD (kcps stands for Kilo Count Per Second).
 
-		:return:	Signal per SPAD (Kilo Count Per Second/SPAD).
+		@return 	Signal per SPAD (Kilo Count Per Second/SPAD).
+		
 		"""
 		self.status = 0
 		SpNb=1
@@ -980,10 +984,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_ambient_per_spad(self):
-		"""
+		"""!
 		This function returns the ambient per SPAD in kcps/SPAD
 
-		:return:	Ambient per SPAD
+		@return 	Ambient per SPAD
+		
 		"""
 		self.status = 0
 		SpNb=1
@@ -996,10 +1001,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_signal_rate(self):
-		"""
+		"""!
 		This function returns the returned signal in kcps.
 
-		:return:	signal in kcps
+		@return 	signal in kcps
+		
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,
@@ -1010,10 +1016,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_spad_nb(self):
-		"""
+		"""!
 		This function returns the current number of enabled SPADs
 
-		:return:	Number of enabled SPADs
+		@return 	Number of enabled SPADs
+		
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,
@@ -1024,10 +1031,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_ambient_rate(self):
-		"""
+		"""!
 		This function returns the ambient rate in kcps
 
-		:return:	Ambient rate in kcps
+		@return 	Ambient rate in kcps
+		
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address, RESULT__AMBIENT_COUNT_RATE_MCPS_SD, 2)
@@ -1037,15 +1045,16 @@ class QwiicVL53L1X(object):
 
 
 	def get_range_status(self):
-		"""
+		"""!
 		This function returns the ranging status error
 
-		:return:	Ranging status error
+		@return 	Ranging status error
 
 						* 0- no error
 						* 1- sigma failed
 						* 2- signal failed
 						* 7- wrap-around
+		
 		"""
 		self.status = 0
 		RgSt = self.__i2cRead(self.address, VL53L1_RESULT__RANGE_STATUS, 1)
@@ -1074,10 +1083,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_offset(self, OffsetValue):
-		"""
+		"""!
 		This function programs the offset correction in mm
 
-		:param OffsetValue:	The offset correction value to program in mm
+		@param OffsetValue: The offset correction value to program in mm
 		"""
 		self.status = 0
 		Temp = OffsetValue*4
@@ -1091,11 +1100,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_offset(self):
-		"""
+		"""!
 		This function returns the programmed offset correction value in mm
 
-		:return:	Offset correction value in mm
-		:rtype:		Integer
+		@return **Integer** Offset correction value in mm
 		"""
 		self.status = 0
 		Temp = self.__i2cRead(self.address,ALGO__PART_TO_PART_RANGE_OFFSET_MM, 2)
@@ -1107,11 +1115,11 @@ class QwiicVL53L1X(object):
 
 
 	def set_xtalk(self, XtalkValue):
-		"""
+		"""!
 		This function programs the xtalk correction value in cps (Count Per Second).
 		This is the number of photons reflected back from the cover glass in cps.
 
-		:param XTalkValue:	 xtalk correction value in count per second to avoid float type
+		@param XTalkValue: xtalk correction value in count per second to avoid float type
 		"""
 		self.status = 0
 		
@@ -1127,10 +1135,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_xtalk(self):
-		"""
+		"""!
 		This function returns the current programmed xtalk correction value in cps
 
-		:return:	xtalk correction value in cps
+		@return 	xtalk correction value in cps
+		
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,ALGO__CROSSTALK_COMPENSATION_PLANE_OFFSET_KCPS, 2)
@@ -1143,23 +1152,23 @@ class QwiicVL53L1X(object):
 					ThreshLow,
 					ThreshHigh, Window,
 					IntOnNoTarget):
-		"""
+		"""!
 		This function programs the threshold detection mode
 		Example:
 			* self.set_distance_threshold(100,300,0,1): Below 100 
 			* self.set_distance_threshold(100,300,1,1): Above 300 
 			* self.set_distance_threshold(100,300,2,1): Out of window 
-			* self.set_distance_threshold(100,300,3,1): In window 
+			* self.set_distance_threshold(100,300,3,1): In window
 
-		:param mm ThreshLow:	The threshold under which one the device raises an interrupt if Window = 0
-		:param mm ThreshHigh:	The threshold above which one the device raises an interrupt if Window = 1
-		:param Window:				Window detection mode:
+		@param mm ThreshLow: The threshold under which one the device raises an interrupt if Window = 0
+		@param mm ThreshHigh: The threshold above which one the device raises an interrupt if Window = 1
+		@param Window: Window detection mode:
 
 										* 0- below
 										* 1- above
 										* 2- out
 										* 3- in
-		:param IntOnNoTarget:		= 1
+		@param IntOnNoTarget: = 1
 									(*No longer used - just set to 1*)
 		"""
 		self.status = 0
@@ -1181,16 +1190,15 @@ class QwiicVL53L1X(object):
 
 
 	def get_distance_threshold_window(self):
-		"""
+		"""!
 		This function returns the window detection mode (0=below 1=above 2=out 3=in)
-		
-		:return:	Window detection mode:
+
+		@return **Integer** Window detection mode:
 
 						* 0- below
 						* 1- above
 						* 2- out
 						* 3- in
-		:rtype:		Integer
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,SYSTEM__INTERRUPT_CONFIG_GPIO, 1)
@@ -1200,11 +1208,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_distance_threshold_low(self):
-		"""
+		"""!
 		This function returns the low threshold in mm
 
-		:return:	Low threshold in mm
-		:rtype:		Integer		
+		@return **Integer** Low threshold in mm
 		"""
 		self.status = 0
 		low = self.__i2cRead(self.address,SYSTEM__THRESH_LOW, 2)
@@ -1213,11 +1220,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_distance_threshold_high(self):
-		"""
+		"""!
 		This function returns the high threshold in mm
-		
-		:return:	High threshold in mm
-		:rtype:		Integer
+
+		@return **Integer** High threshold in mm
 		"""
 		self.status = 0
 		high = self.__i2cRead(self.address,SYSTEM__THRESH_HIGH, 2)
@@ -1226,7 +1232,7 @@ class QwiicVL53L1X(object):
 
 
 	def set_roi(self, X, Y, OpticalCenter = 199):
-		"""
+		"""!
 		This function programs the ROI (Region of Interest). The height and width of the ROI (X, Y) are set in SPADs; the smallest acceptable ROI size = 4 (4 x 4). The optical center is set based on table below.
 		To set the center, use the pad that is to the right and above (i.e. upper right of) the exact center of the region you'd like to measure as your optical center.
 
@@ -1252,9 +1258,9 @@ class QwiicVL53L1X(object):
 			
 			(Each SPAD has a number which is not obvious.)
 
-		:param X:	ROI Width
-		:param Y:	ROI Height
-		:param OpticalCenter: The pad that is to the upper right of the exact center of the ROI (see table above).
+		@param X: ROI Width
+		@param Y: ROI Height
+		@param OpticalCenter: The pad that is to the upper right of the exact center of the ROI (see table above).
 			**Default = 199**
 		"""
 		self.status = 0
@@ -1274,11 +1280,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_roi_xy(self):
-		"""
+		"""!
 		This function returns width X and height Y
 
-		:return:	Region of Interest Width (X) and Height (Y)
-		:rtype:		List
+		@return **List** Region of Interest Width (X) and Height (Y)
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE, 1)
@@ -1289,10 +1294,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_signal_threshold(self, Signal):
-		"""
+		"""!
 		This function programs a new signal threshold in kcps (default=1024 kcps)
 
-		:param Signal:	Signal threshold in kcps (**default=1024 kcps**)
+		@param Signal: Signal threshold in kcps (**default=1024 kcps**)
 		"""
 		self.status = 0
 
@@ -1302,10 +1307,11 @@ class QwiicVL53L1X(object):
 
 
 	def get_signal_threshold(self):
-		"""
+		"""!
 		This function returns the current signal threshold in kcps
 
-		:return:	Signal threshold in kcps
+		@return 	Signal threshold in kcps
+		
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,
@@ -1315,10 +1321,10 @@ class QwiicVL53L1X(object):
 
 
 	def set_sigma_threshold(self, Sigma):
-		"""
+		"""!
 		This function programs a new sigma threshold in mm (default=15 mm)
 
-		:param Sigma:	Sigma threshold in mm (**default=15 mm**)
+		@param Sigma: Sigma threshold in mm (**default=15 mm**)
 		"""
 		self.status = 0
 
@@ -1332,11 +1338,10 @@ class QwiicVL53L1X(object):
 
 
 	def get_sigma_threshold(self):
-		"""
+		"""!
 		This function returns the current sigma threshold in mm
 
-		:return:	Sigma threshold in mm
-		:rtype:		Integer
+		@return **Integer** Sigma threshold in mm
 		"""
 		self.status = 0
 		
@@ -1347,7 +1352,7 @@ class QwiicVL53L1X(object):
 
 
 	def start_temperature_update(self):
-		"""
+		"""!
 		This function performs the temperature calibration.
 		It is recommended to call this function any time the temperature might have changed by more than 8 deg C
 		without sensor ranging activity for an extended period.
@@ -1376,15 +1381,14 @@ class QwiicVL53L1X(object):
 	###############################################################################
 
 	def calibrate_offset(self, TargetDistInMm):
-		"""
+		"""!
 		This function performs the offset calibration.
 		The function returns the offset value found and programs the offset compensation into the device.
-		
-		:param TargetDistInMm: 	* Target distance in mm, ST recommended 100 mm
+
+		@param TargetDistInMm: * Target distance in mm, ST recommended 100 mm
 								* Target reflectance = grey17%
-		:return status:	 * 0- success
-						* !=0- failed
-		:return offset:	offset found in mm #?
+
+		@return int status: 0 if no error, other if error
 		"""
 		tmp = 0
 		AverageDistance = 0
@@ -1412,17 +1416,16 @@ class QwiicVL53L1X(object):
 
 
 	def calibrate_xtalk(self, TargetDistInMm):
-		"""
+		"""!
 		This function performs the xtalk calibration.
 		The function returns the xtalk value found and programs the xtalk compensation to the device
 
-		:param TargetDistInMm: Target distance in mm
+		@param TargetDistInMm: Target distance in mm
 
 								* The target distance : the distance where the sensor start to "under range" due to the influence of the photons reflected back from the cover glass becoming strong (also called the inflection point).
 									* Target reflectance = grey 17%
-		:return status:	* 0- success
-						* !=0- failed
-		:return xtalk:	xtalk value found in cps (number of photons in count per second) #?
+
+		@return int status: 0 if no error, other if error				
 		"""
 		tmp= 0
 		AverageSignalRate = 0
@@ -1463,7 +1466,7 @@ class QwiicVL53L1X(object):
 # protected:
 
 	def __get_tick_count(self):
-		"""
+		"""!
 		Returns current tick count in [ms]
 		"""
 		self.status = VL53L1_ERROR_NONE
@@ -1485,7 +1488,7 @@ class QwiicVL53L1X(object):
 	
 
 	def __wait_value_mask_ex(self, timeout_ms, index, value, mask, poll_delay_ms):
-		"""
+		"""!
 		Platform implementation of ```WaitValueMaskEx``` V2WReg script command
 		"""
 
@@ -1536,18 +1539,17 @@ class QwiicVL53L1X(object):
 ###############################################################################
 
 	def __i2cWrite(self, address, register, data, nbytes):
-		"""
+		"""!
 		A wrapper for the I2C driver since device needs 16-bit register addresses. Formats register and data values so that they can be written to device as a block for proper I2C transactions.
 
-		:param	register:	16-bit register address
+		@param register: 16-bit register address
 							(can be 8-bit, just writes 0x00 byte prior to value)
-		:param	data:		Data to be set in register
+		@param data: Data to be set in register
 							(should be 4, 2, or 1 bytes in length)
-		:param	nbytes:		number of bytes in data (*to be set*)
+		@param nbytes: number of bytes in data (*to be set*)
 							(needs to be specified as python passes in integer value, but device expects a specific nuber of bytes for that value)
-		
-		:return:	status- (*self*) Indicator for I2C transaction success???
-		:rtype:		Boolean
+
+		@return **Boolean** status- (*self*) Indicator for I2C transaction success???
 		"""
 		
 		registerMSB = register >> 8
@@ -1577,16 +1579,15 @@ class QwiicVL53L1X(object):
 	
 
 	def __i2cRead(self, address, register, nbytes):
-		"""
+		"""!
 		A wrapper for the I2C driver since device needs 16-bit register addresses. Formats register and data values so that they can be written to device as a block for proper I2C transactions.
 
-		:param	register:	16-bit register address
+		@param register: 16-bit register address
 							(can be 8-bit, just writes 0x00 byte prior to value)
-		:param	nbytes:		number of bytes in data (*to be read*)
+		@param nbytes: number of bytes in data (*to be read*)
 							(needs to be specified for transaction)
-		
-		:return:	data
-		:rtype:		integer
+
+		@return **integer** data
 		"""
 		
 		data = 0
