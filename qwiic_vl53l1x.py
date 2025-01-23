@@ -1604,7 +1604,8 @@ class QwiicVL53L1X(object):
 		# read = self.i2c_custom.read(address, nbytes)						# Read part of transaction
 
 		# self._i2c.i2c_rdwr(write, read)
-		read_data = self._i2c.__i2c_rdwr__(address, [registerMSB, registerLSB], nbytes)
+		# read_data = self._i2c.__i2c_rdwr__(address, [registerMSB, registerLSB], nbytes)
+		read_data = self._i2c.write_read_block(address, [registerMSB, registerLSB], nbytes)
 		buffer = list(read_data)
 
 		for i in range(0, nbytes):
