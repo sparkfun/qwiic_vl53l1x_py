@@ -59,13 +59,16 @@
 	removed from the sensor.
 """
 
-import qwiic
-import time, statistics
+import qwiic_vl53l1x
+import time
+
+def mean(numbers):
+	return float(sum(numbers)) / max(len(numbers), 1)
 
 print("VL53L1X Qwiic Test\n")
-ToF = qwiic.QwiicVL53L1X()
+ToF = qwiic_vl53l1x.QwiicVL53L1X()
 
-if (ToF.sensor_init() == None):					 # Begin returns 0 on a good init
+if (ToF.sensor_init() == None):	# Begin returns 0 on a good init
 	print("Sensor online!\n")
 
 ToF.set_distance_mode(1)	# Sets Distance Mode Short (Long- Change value to 2)
@@ -76,7 +79,7 @@ while True:
 	start = time.time()
 
 	try:
-		ToF.start_ranging()									# Write configuration bytes to initiate measurement
+		ToF.start_ranging()	# Write configuration bytes to initiate measurement
 		time.sleep(.005)
 		distance.append(ToF.get_distance())	# Get the result of the measurement from the sensor
 		time.sleep(.005)
@@ -91,10 +94,10 @@ while True:
 	distanceFeet = distanceInches / 12.0
 	
 	if len(distance) < 10:
-		avgdistance = statistics.mean(distance)
+		avgdistance = mean(distance)
 	else:
 		distance.remove(distance[0])
-		avgdistance = statistics.mean(distance[len(distance)-10:len(distance)+1]) # Running average of last 10 measurements
+		avgdistance = mean(distance[len(distance)-10:len(distance)+1]) # Running average of last 10 measurements
 	
 	signalrate = ToF.get_signal_rate()
 	rangestatus = ToF.get_range_status()

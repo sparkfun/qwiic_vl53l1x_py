@@ -55,11 +55,11 @@
 	be sure the vacuum tape has been removed from the sensor.
 """
 
-import qwiic
+import qwiic_vl53l1x
 import time
 
 print("VL53L1X Qwiic Test\n")
-ToF = qwiic.QwiicVL53L1X()
+ToF = qwiic_vl53l1x.QwiicVL53L1X()
 
 if (ToF.sensor_init() == None):					 # Begin returns 0 on a good init
 	print("Sensor online!\n")
