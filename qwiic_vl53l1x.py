@@ -49,12 +49,6 @@
 ###############################################################################
 #
 # Original License:
-#=======================================================================
-# @author	IMG
-# @version	V0.0.1
-# @date		14-December-2018
-# @brief	Implementation file for the VL53L1X driver class
-#=======================================================================
 # COPYRIGHT(c) 2017 STMicroelectronics International N.V. All rights reserved.
 #
 # This file is part of VL53L1 Core and is dual licensed,
@@ -112,20 +106,8 @@
 import time							# Time access and conversion package
 import math							# Basic math package
 import qwiic_i2c					# I2C bus driver package
-# from smbus2 import SMBus, i2c_msg	# I2C bus driver package
 
 # From vL53l1x_class.h Header File
-###############################################################################
-###############################################################################
-
-# if _MSC_VER != None:
-# 	if VL53L1X_API_EXPORTS != None:
-# 		VL53L1X_API = __declspec(dllexport)
-# 	else:
-# 		VL53L1X_API
-# else:
-# 	VL53L1X_API
-
 SOFT_RESET =															0x0000
 VL53L1_I2C_SLAVE__DEVICE_ADDRESS =										0x0001
 VL53L1_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND =							0x0008
@@ -169,13 +151,9 @@ VL53L1_IDENTIFICATION__MODEL_ID =										0x010F
 VL53L1_ROI_CONFIG__MODE_ROI_CENTRE_SPAD =								0x013E
 
 _VL53L1X_DEFAULT_DEVICE_ADDRESS =										0x52
-###############################################################################
-###############################################################################
 
 _DEFAULT_NAME = "Qwiic 4m Distance Sensor (ToF)"
 
-###############################################################################
-###############################################################################
 _FULL_ADDRESS_LIST = list(range(0x08,0x77+1))					# Full I2C Address List (excluding resrved addresses)
 _FULL_ADDRESS_LIST.remove(_VL53L1X_DEFAULT_DEVICE_ADDRESS >> 1) # Remove Default Address of VL53L1X from list
 _AVAILABLE_I2C_ADDRESS = [_VL53L1X_DEFAULT_DEVICE_ADDRESS >> 1]	# Initialize with Default Address of VL53L1X
@@ -183,8 +161,7 @@ _AVAILABLE_I2C_ADDRESS.extend(_FULL_ADDRESS_LIST)				# Add Full Range of I2C Add
 
 
 # From vL53l1x_class.cpp C++ File
-###############################################################################
-###############################################################################
+
 ALGO__PART_TO_PART_RANGE_OFFSET_MM =									0x001E
 MM_CONFIG__INNER_OFFSET_MM =											0x0020
 MM_CONFIG__OUTER_OFFSET_MM = 											0x0022
@@ -192,111 +169,108 @@ MM_CONFIG__OUTER_OFFSET_MM = 											0x0022
 # DEBUG_MODE
 
 VL51L1X_DEFAULT_CONFIGURATION = [
-0x00,	# 0x2d : set bit 2 and 5 to 1 for fast plus mode (1MHz I2C), else don't touch
-0x01,	# 0x2e : bit 0 if I2C pulled up at 1.8V, else set bit 0 to 1 (pull up at AVDD)
-0x01,	# 0x2f : bit 0 if GPIO pulled up at 1.8V, else set bit 0 to 1 (pull up at AVDD)
-0x01,	# 0x30 : set bit 4 to 0 for active high interrupt and 1 for active low (bits 3:0 must be 0x1), use set_interrupt_polarity()
-0x02,	# 0x31 : bit 1 = interrupt depending on the polarity, use check_for_data_ready()
-0x00,	# 0x32 : not user-modifiable
-0x02,	# 0x33 : not user-modifiable
-0x08,	# 0x34 : not user-modifiable
-0x00,	# 0x35 : not user-modifiable
-0x08,	# 0x36 : not user-modifiable
-0x10,	# 0x37 : not user-modifiable
-0x01,	# 0x38 : not user-modifiable
-0x01,	# 0x39 : not user-modifiable
-0x00,	# 0x3a : not user-modifiable
-0x00,	# 0x3b : not user-modifiable
-0x00,	# 0x3c : not user-modifiable
-0x00,	# 0x3d : not user-modifiable
-0xff,	# 0x3e : not user-modifiable
-0x00,	# 0x3f : not user-modifiable
-0x0F,	# 0x40 : not user-modifiable
-0x00,	# 0x41 : not user-modifiable
-0x00,	# 0x42 : not user-modifiable
-0x00,	# 0x43 : not user-modifiable
-0x00,	# 0x44 : not user-modifiable
-0x00,	# 0x45 : not user-modifiable
-0x20,	# 0x46 : interrupt configuration 0->level low detection, 1-> level high, 2-> Out of window, 3->In window, 0x20-> New sample ready , TBC
-0x0b,	# 0x47 : not user-modifiable
-0x00,	# 0x48 : not user-modifiable
-0x00,	# 0x49 : not user-modifiable
-0x02,	# 0x4a : not user-modifiable
-0x0a,	# 0x4b : not user-modifiable
-0x21,	# 0x4c : not user-modifiable
-0x00,	# 0x4d : not user-modifiable
-0x00,	# 0x4e : not user-modifiable
-0x05,	# 0x4f : not user-modifiable
-0x00,	# 0x50 : not user-modifiable
-0x00,	# 0x51 : not user-modifiable
-0x00,	# 0x52 : not user-modifiable
-0x00,	# 0x53 : not user-modifiable
-0xc8,	# 0x54 : not user-modifiable
-0x00,	# 0x55 : not user-modifiable
-0x00,	# 0x56 : not user-modifiable
-0x38,	# 0x57 : not user-modifiable
-0xff,	# 0x58 : not user-modifiable
-0x01,	# 0x59 : not user-modifiable
-0x00,	# 0x5a : not user-modifiable
-0x08,	# 0x5b : not user-modifiable
-0x00,	# 0x5c : not user-modifiable
-0x00,	# 0x5d : not user-modifiable
-0x01,	# 0x5e : not user-modifiable
-0xdb,	# 0x5f : not user-modifiable
-0x0f,	# 0x60 : not user-modifiable
-0x01,	# 0x61 : not user-modifiable
-0xf1,	# 0x62 : not user-modifiable
-0x0d,	# 0x63 : not user-modifiable
-0x01,	# 0x64 : Sigma threshold MSB (mm in 14.2 format for MSB+LSB), use set_sigma_threshold(), default value 90 mm 
-0x68,	# 0x65 : Sigma threshold LSB
-0x00,	# 0x66 : Min count Rate MSB (MCPS in 9.7 format for MSB+LSB), use set_signal_threshold()
-0x80,	# 0x67 : Min count Rate LSB
-0x08,	# 0x68 : not user-modifiable
-0xb8,	# 0x69 : not user-modifiable
-0x00,	# 0x6a : not user-modifiable
-0x00,	# 0x6b : not user-modifiable
-0x00,	# 0x6c : Intermeasurement period MSB, 32 bits register, use set_inter_measurement_in_ms()
-0x00,	# 0x6d : Intermeasurement period
-0x0f,	# 0x6e : Intermeasurement period
-0x89,	# 0x6f : Intermeasurement period LSB
-0x00,	# 0x70 : not user-modifiable
-0x00,	# 0x71 : not user-modifiable
-0x00,	# 0x72 : distance threshold high MSB (in mm, MSB+LSB), use SetD:tanceThreshold()
-0x00,	# 0x73 : distance threshold high LSB
-0x00,	# 0x74 : distance threshold low MSB ( in mm, MSB+LSB), use SetD:tanceThreshold()
-0x00,	# 0x75 : distance threshold low LSB
-0x00,	# 0x76 : not user-modifiable
-0x01,	# 0x77 : not user-modifiable
-0x0f,	# 0x78 : not user-modifiable
-0x0d,	# 0x79 : not user-modifiable
-0x0e,	# 0x7a : not user-modifiable
-0x0e,	# 0x7b : not user-modifiable
-0x00,	# 0x7c : not user-modifiable
-0x00,	# 0x7d : not user-modifiable
-0x02,	# 0x7e : not user-modifiable
-0xc7,	# 0x7f : ROI center, use set_roi()
-0xff,	# 0x80 : XY ROI (X=Width, Y=Height), use set_roi()
-0x9B,	# 0x81 : not user-modifiable
-0x00,	# 0x82 : not user-modifiable
-0x00,	# 0x83 : not user-modifiable
-0x00,	# 0x84 : not user-modifiable
-0x01,	# 0x85 : not user-modifiable
-0x00,	# 0x86 : clear interrupt, use clear_interrupt()
-0x00	# 0x87 : start ranging, use start_ranging() or stop_ranging(), If you want an automatic start after self.init() call, put 0x40 in location 0x87
+0x00,	# 0x2d
+0x01,	# 0x2e
+0x01,	# 0x2f
+0x01,	# 0x30
+0x02,	# 0x31
+0x00,	# 0x32
+0x02,	# 0x33
+0x08,	# 0x34
+0x00,	# 0x35
+0x08,	# 0x36
+0x10,	# 0x37
+0x01,	# 0x38
+0x01,	# 0x39
+0x00,	# 0x3a
+0x00,	# 0x3b
+0x00,	# 0x3c
+0x00,	# 0x3d
+0xff,	# 0x3e
+0x00,	# 0x3f
+0x0F,	# 0x40
+0x00,	# 0x41
+0x00,	# 0x42
+0x00,	# 0x43
+0x00,	# 0x44
+0x00,	# 0x45
+0x20,	# 0x46
+0x0b,	# 0x47
+0x00,	# 0x48
+0x00,	# 0x49
+0x02,	# 0x4a
+0x0a,	# 0x4b
+0x21,	# 0x4c
+0x00,	# 0x4d
+0x00,	# 0x4e
+0x05,	# 0x4f
+0x00,	# 0x50
+0x00,	# 0x51
+0x00,	# 0x52
+0x00,	# 0x53
+0xc8,	# 0x54
+0x00,	# 0x55
+0x00,	# 0x56
+0x38,	# 0x57
+0xff,	# 0x58
+0x01,	# 0x59
+0x00,	# 0x5a
+0x08,	# 0x5b
+0x00,	# 0x5c
+0x00,	# 0x5d
+0x01,	# 0x5e
+0xdb,	# 0x5f
+0x0f,	# 0x60
+0x01,	# 0x61
+0xf1,	# 0x62
+0x0d,	# 0x63
+0x01,	# 0x64
+0x68,	# 0x65
+0x00,	# 0x66
+0x80,	# 0x67
+0x08,	# 0x68
+0xb8,	# 0x69
+0x00,	# 0x6a
+0x00,	# 0x6b
+0x00,	# 0x6c
+0x00,	# 0x6d
+0x0f,	# 0x6e
+0x89,	# 0x6f
+0x00,	# 0x70
+0x00,	# 0x71
+0x00,	# 0x72
+0x00,	# 0x73
+0x00,	# 0x74
+0x00,	# 0x75
+0x00,	# 0x76
+0x01,	# 0x77
+0x0f,	# 0x78
+0x0d,	# 0x79
+0x0e,	# 0x7a
+0x0e,	# 0x7b
+0x00,	# 0x7c
+0x00,	# 0x7d
+0x02,	# 0x7e
+0xc7,	# 0x7f
+0xff,	# 0x80
+0x9B,	# 0x81
+0x00,	# 0x82
+0x00,	# 0x83
+0x00,	# 0x84
+0x01,	# 0x85
+0x00,	# 0x86
+0x00	# 0x87
 ]
-###############################################################################
-###############################################################################
-
 
 # From vL53l1_error_codes.h Header File
 ###############################################################################
 ###############################################################################
-# @brief Error Code definitions for VL53L1 API.
+# Error Code definitions for VL53L1 API.
 #=======================================================================
 # PRIVATE define do not edit
 #=======================================================================
 
-# @defgroup VL53L1_define_Error_group Error and Warning code returned by API
+# VL53L1_define_Error_group Error and Warning code returned by API
 # The following DEFINE are used to identify the PAL ERROR
 
 VL53L1_ERROR_NONE =															  0
@@ -441,38 +415,11 @@ VL53L1_ERROR_NOT_IMPLEMENTED =												-41
 # compatible with the device"""
 VL53L1_ERROR_PLATFORM_SPECIFIC_START =										-60
 # """Tells the starting code for platform
-# 	 @} VL53L1_define_Error_group"""
 
 # _VL53L1_ERROR_CODES_H_
-###############################################################################
-###############################################################################
 
-
-
-
-###############################################################################
-# Classes ------------------------------------------------
 # 	Class representing a VL53L1 sensor component
-###############################################################################
 class QwiicVL53L1X(object):
-
-	"""!
-	SparkFunVL53L1X
-	Initialise the VL53L1X chip at ``address`` with ``i2c_driver``.
-
-	@param address: The I2C address to use for the device. 
-	
-		* If not provided, the default address is used.
-	@param i2c_driver: An existing i2c driver object.
-	
-		* If not provided a driver object is created.
-
-	@return **Bool** **Constructor Initialization** -
-
-						* True-	Successful
-						* False-	Issue loading I2C driver
-	"""
-
 	# Software Version Information
 	VL53L1X_IMPLEMENTATION_VER_MAJOR=		1
 	VL53L1X_IMPLEMENTATION_VER_MINOR=		0
@@ -643,8 +590,7 @@ class QwiicVL53L1X(object):
 		"""!
 		This function loads the 135 bytes default values to initialize the sensor.
 
-		@return 	* 0:success
-					* != 0:failed
+		@return **Integer** 0 on success or error code
 		
 		"""
 		self.status = 0
@@ -686,8 +632,7 @@ class QwiicVL53L1X(object):
 		"""!
 		This function programs the interrupt polarity
 
-		@param NewPolarity: * 1 = active high (**default**)
-							* 0 = active low
+		@param **Integer** NewPolarity: 1 = active high (default), 0 = active low
 		"""
 		self.status = 0
 		Temp = self.__i2cRead(self.address, GPIO_HV_MUX__CTRL, 1)
@@ -702,10 +647,7 @@ class QwiicVL53L1X(object):
 		"""!
 		This function returns the current interrupt polarity
 
-		@return 	* 1 = active high (**default**)
-					* 0 = active low
-		:rtypye: Integer
-		
+		@return **Integer** 1 = active high (**default**), 0 = active low
 		"""
 		self.status = 0
 		Temp = self.__i2cRead(self.address, GPIO_HV_MUX__CTRL, 1)
@@ -853,8 +795,9 @@ class QwiicVL53L1X(object):
 		"""!
 		This function programs the distance mode (1=short, 2=long(default)).
 
-		@param DM: * 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
-					* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**).
+		@param Integer DM: Distance Mode
+			* 1- Short mode max distance is limited to 1.3 m but better ambient immunity
+			* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**)
 		"""
 		self.status = 0
 
@@ -885,9 +828,9 @@ class QwiicVL53L1X(object):
 		"""!
 		This function returns the current distance mode (1=short, 2=long).
 
-		@return 	* 1- Short mode max distance is limited to 1.3 m but better ambient immunity.
-					* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**).
-		
+		@return **Integer** Distance Mode
+			* 1- Short mode max distance is limited to 1.3 m but better ambient immunity
+			* 2- Long mode can range up to 4 m in the dark with 200 ms timing budget (**default**)
 		"""
 		self.status = 0
 
@@ -939,7 +882,8 @@ class QwiicVL53L1X(object):
 		"""!
 		This function returns the boot state of the device (1:booted, 0:not booted)
 
-		@return **Integer** * 1- booted
+		@return **Integer** Boot state
+			* 1- booted
 			* 0- not booted
 		"""
 		self.status = 0
@@ -1054,7 +998,6 @@ class QwiicVL53L1X(object):
 						* 1- sigma failed
 						* 2- signal failed
 						* 7- wrap-around
-		
 		"""
 		self.status = 0
 		RgSt = self.__i2cRead(self.address, VL53L1_RESULT__RANGE_STATUS, 1)
@@ -1154,22 +1097,21 @@ class QwiicVL53L1X(object):
 					IntOnNoTarget):
 		"""!
 		This function programs the threshold detection mode
+
+		@param mm ThreshLow: The threshold under which one the device raises an interrupt if Window = 0
+		@param mm ThreshHigh: The threshold above which one the device raises an interrupt if Window = 1
+		@param Window: Window detection mode:
+										* 0- below
+										* 1- above
+										* 2- out
+										* 3- in
+		@param IntOnNoTarget: 1 (No longer used - just set to 1)
+
 		Example:
 			* self.set_distance_threshold(100,300,0,1): Below 100 
 			* self.set_distance_threshold(100,300,1,1): Above 300 
 			* self.set_distance_threshold(100,300,2,1): Out of window 
 			* self.set_distance_threshold(100,300,3,1): In window
-
-		@param mm ThreshLow: The threshold under which one the device raises an interrupt if Window = 0
-		@param mm ThreshHigh: The threshold above which one the device raises an interrupt if Window = 1
-		@param Window: Window detection mode:
-
-										* 0- below
-										* 1- above
-										* 2- out
-										* 3- in
-		@param IntOnNoTarget: = 1
-									(*No longer used - just set to 1*)
 		"""
 		self.status = 0
 		Temp = 0
@@ -1193,12 +1135,11 @@ class QwiicVL53L1X(object):
 		"""!
 		This function returns the window detection mode (0=below 1=above 2=out 3=in)
 
-		@return **Integer** Window detection mode:
-
-						* 0- below
-						* 1- above
-						* 2- out
-						* 3- in
+		@return **Integer** Window detection mode
+			* 0- below
+			* 1- above
+			* 2- out
+			* 3- in
 		"""
 		self.status = 0
 		tmp = self.__i2cRead(self.address,SYSTEM__INTERRUPT_CONFIG_GPIO, 1)
@@ -1260,8 +1201,7 @@ class QwiicVL53L1X(object):
 
 		@param X: ROI Width
 		@param Y: ROI Height
-		@param OpticalCenter: The pad that is to the upper right of the exact center of the ROI (see table above).
-			**Default = 199**
+		@param OpticalCenter: The pad that is to the upper right of the exact center of the ROI (see table above). (default=199)
 		"""
 		self.status = 0
 		# OpticalCenter =self.__i2cRead(self.address, VL53L1_ROI_CONFIG__MODE_ROI_CENTRE_SPAD, 1)
@@ -1421,11 +1361,10 @@ class QwiicVL53L1X(object):
 		The function returns the xtalk value found and programs the xtalk compensation to the device
 
 		@param TargetDistInMm: Target distance in mm
+		* The target distance is the distance where the sensor start to "under range" due to the influence of the photons reflected back from the cover glass becoming strong (also called the inflection point).
+		* Target reflectance = grey 17%
 
-								* The target distance : the distance where the sensor start to "under range" due to the influence of the photons reflected back from the cover glass becoming strong (also called the inflection point).
-									* Target reflectance = grey 17%
-
-		@return int status: 0 if no error, other if error				
+		@return **int** status: 0 if no error, other if error				
 		"""
 		tmp= 0
 		AverageSignalRate = 0
