@@ -1,9 +1,9 @@
 {
     "urls": [
-      ["qwiic_vl53l1x.py", "github:sparkfun/Qwiic_VL53L1X_Py/qwiic_vl53l1x.py"]
-    ],
-    "deps": [
-      ["github:sparkfun/Qwiic_I2C_Py", "master"]
+      ["qwiic_vl53l1x_py_examples/Example1_ReadDistance.py", "github:sparkfun/qwiic_vl53l1x_py/examples/Example1_ReadDistance.py"],
+      ["qwiic_vl53l1x_py_examples/Example2_SetDistanceMode.py", "github:sparkfun/qwiic_vl53l1x_py/examples/Example2_SetDistanceMode.py"],
+      ["qwiic_vl53l1x_py_examples/Example3_StatusandRate.py", "github:sparkfun/qwiic_vl53l1x_py/examples/Example3_StatusandRate.py"],
+      ["qwiic_vl53l1x_py_examples/Example4_SetIntermeasurementPeriod.py", "github:sparkfun/qwiic_vl53l1x_py/examples/Example4_SetIntermeasurementPeriod.py"]
     ],
     "version": "1.0.1"
 }
