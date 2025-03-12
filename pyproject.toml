@@ -3,7 +3,7 @@ requires = ["setuptools"]
 
 [project]
 name = "sparkfun_qwiic_vl53l1x"
-version = "1.0.1"
+version = "2.0.0"
 description = "SparkFun Electronics Qwiic VL53L1X"
 readme = "DESCRIPTION.rst"
 
